@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BatLang · easy to code</title>
+    <!-- Fonts & modern feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1e1e24; /* BATLANG_COLOR_BG from C++ */
+            color: #d4d4d8;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* main container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 2rem 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* header & menu */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid #3a3a44;
+            padding-bottom: 1rem;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #76a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .menu-btn {
+            background: #2a2a33;
+            border: none;
+            color: #c0c0cf;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: 1px solid #3f3f4a;
+        }
+
+        .menu-btn:hover {
+            background: #3f3f4c;
+            color: white;
+            border-color: #76a0ff;
+        }
+
+        .menu-btn.active {
+            background: #4f4f62;
+            color: white;
+            border-color: #8aacff;
+            box-shadow: 0 0 10px #5f7ed780;
+        }
+
+        /* hero / tagline */
+        .hero {
+            text-align: center;
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(to right, #e0e0ff, #b2c9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero .sub {
+            font-size: 1.4rem;
+            color: #9ca3af;
+            margin-top: 0.6rem;
+            font-weight: 400;
+        }
+
+        /* download button area */
+        .download-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1rem 0 2.5rem;
+        }
+
+        .download-btn {
+            background: #565660; /* BATLANG_COLOR_BUTTON */
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            padding: 1.2rem 4rem;
+            border-radius: 80px;
+            color: #f0f0ff;
+            cursor: pointer;
+            transition: 0.25s ease;
+            box-shadow: 0 10px 20px -5px #0a0a14;
+            border: 1px solid #72728c;
+            letter-spacing: 1px;
+            min-width: 380px;
+        }
+
+        .download-btn:hover {
+            background: #6a6a74; /* hover */
+            border-color: #9bb0ff;
+            transform: scale(1.02);
+            box-shadow: 0 15px 25px -5px #14141e;
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
+        .download-thanks {
+            background: #3f8259 !important; /* success greenish */
+            border-color: #6fcf97;
+            box-shadow: 0 0 20px #3bb08b;
+        }
+
+        .download-small-note {
+            margin-top: 0.8rem;
+            font-size: 0.95rem;
+            color: #9099a5;
+        }
+
+        /* card layout for language info + questions */
+        .info-panels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0 2rem;
+        }
+
+        .panel {
+            background: #25252c; /* BATLANG_COLOR_TEXTBOX_BG */
+            border-radius: 28px;
+            padding: 2rem 2rem;
+            flex: 1 1 300px;
+            border: 1px solid #3f3f4a;
+            box-shadow: 0 20px 35px -10px #0a0a12;
+        }
+
+        .panel h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #c6d4ff;
+            border-left: 6px solid #768cff;
+            padding-left: 1.2rem;
+        }
+
+        .lang-desc {
+            font-size: 1.1rem;
+            color: #bcbcce;
+            margin-bottom: 2rem;
+        }
+
+        .features-list {
+            list-style: none;
+        }
+
+        .features-list li {
+            margin-bottom: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            background: #1e1e28;
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid #3a3a4a;
+            color: #bcc2e0;
+        }
+
+        .features-list li span {
+            color: #b0e0b0;
+            font-weight: 600;
+            margin-right: 0.6rem;
+        }
+
+        /* Q&A */
+        .qa-block p {
+            background: #1b1b24;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #6d8aff;
+            font-size: 1.05rem;
+        }
+
+        .qa-block p strong {
+            color: #eaeaff;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .virus-note {
+            color: #ffa67e;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* code snippet preview (from example) */
+        .code-preview {
+            background: #1a1a22;
+            border-radius: 24px;
+            padding: 1.8rem;
+            border: 1px solid #4a4a5a;
+            margin: 2rem 0 1.5rem;
+            box-shadow: inset 0 0 0 1px #2f2f3a;
+        }
+
+        .code-preview h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #adb9ed;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-preview pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            background: #0e0e14;
+            padding: 1.5rem;
+            border-radius: 18px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #cbd5ff;
+            border: 1px solid #2f2f44;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #9ecbff;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #6f6f88;
+            font-size: 0.9rem;
+            border-top: 1px solid #2f2f3a;
+            padding-top: 2rem;
+        }
+
+        /* tabs simulation (menu) content via simple visibility */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active-content {
+            display: block;
+        }
+
+        /* example buttons for quick nav (inside menu) */
+        .github-corner {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu / navigation bar -->
+        <div class="navbar">
+            <div class="logo">BatLang</div>
+            <div class="menu" id="menuTabs">
+                <button class="menu-btn active" data-tab="main">🏠 Main</button>
+                <button class="menu-btn" data-tab="about">📘 Language</button>
+                <button class="menu-btn" data-tab="qa">❓ Questions</button>
+                <button class="menu-btn" data-tab="code">💻 Code sample</button>
+            </div>
+        </div>
+
+        <!-- MAIN TAB (default visible) -->
+        <div id="tab-main" class="tab-content active-content">
+            <div class="hero">
+                <h1>BatLang - Programming Language<br>Easy To code</h1>
+                <div class="sub">native windows, human-friendly syntax</div>
+            </div>
+
+            <!-- Download button with dynamic text -->
+            <div class="download-section">
+                <button class="download-btn" id="downloadBatBtn">⬇️ Download</button>
+                <div class="download-small-note" id="downloadNote">version 1.0 · direct exe</div>
+            </div>
+
+            <!-- Short intro + features (extracted from code) -->
+            <div class="info-panels">
+                <div class="panel">
+                    <h2>⚡ core powers</h2>
+                    <ul class="features-list">
+                        <li><span>◆</span> ServiceAdd &lt;ServiceGui.h&gt; — GUI windows</li>
+                        <li><span>◆</span> ServiceAdd &lt;WindowsAPI.h&gt; — system calls</li>
+                        <li><span>◆</span> add, print, println, wait, stop</li>
+                        <li><span>◆</span> if/end, color, title, clear</li>
+                        <li><span>◆</span> ipcfg(), namepc(), ping(), kill()</li>
+                        <li><span>◆</span> msgbox, beep, openurl, programlist</li>
+                        <li><span>◆</span> native GUI: Button, Textbox, events</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <h2>📦 quick example</h2>
+                    <pre style="background:#1a1a22; font-family: 'JetBrains Mono'; padding: 1rem; border-radius: 16px; overflow: auto;">ServiceAdd &lt;WindowsAPI.h&gt;
+add name = "BatLang"
+print("Hello from BatLang")
+ipcfg()
+wait(2)
+msgbox("Done")
+end)</pre>
+                    <p style="margin-top: 1rem; color:#a9a9c0">→ compiles to .bat / powershell</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT / LANGUAGE TAB -->
+        <div id="tab-about" class="tab-content">
+            <div class="panel" style="max-width: 100%;">
+                <h2>📘 About BatLang</h2>
+                <div class="lang-desc">
+                    <p>BatLang is a modern, readable language that compiles to batch + PowerShell hybrids.  You get Windows API access, GUI creation, and simple variable handling — all without learning complex syntax. The IDE (C++ with dark mode) lets you write, compile, and run with one click.</p>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
+                    <div style="flex:1; min-width: 200px;">
+                        <h3 style="color:#b3c2ff;">🧩 Services</h3>
+                        <ul style="list-style: square inside; color:#b0b0ca;">
+                            <li>ServiceGui.h – buttons, textboxes, forms</li>
+                            <li>WindowsAPI.h – ping, ipconfig, task management</li>
+                        </ul>
+                    </div>
+                    <div style="flex:2;">
+                        <h3 style="color:#b3c2ff;">🖥️ GUI commands (from your C++ code)</h3>
+                        <pre style="background:#1f1f2b;">GuiService:AddGui(Frame)
+GuiService.Name = "My App"
+GuiService:AddGui(Button)
+Button.Text = "Click"
+$form.Controls.Add($button)
+$form.ShowDialog()</pre>
+                    </div>
+                </div>
+                <p style="margin-top: 2rem; background: #2b2b36; padding: 1rem; border-radius: 20px;"><span style="color:#aad6ff;">✏️</span> You can even combine Windows API and GUI in one script. The compiler validates missing services and gives clear errors — like “You Forgot To Add Service”.</p>
+            </div>
+        </div>
+
+        <!-- QUESTIONS TAB (QA) -->
+        <div id="tab-qa" class="tab-content">
+            <div class="panel" style="max-width: 800px; margin: 0 auto;">
+                <h2>❓ frequently asked</h2>
+                <div class="qa-block">
+                    <p><strong>1. Is official site? </strong> Yes, it is. BatLang is maintained and hosted here.</p>
+                    <p><strong>2. Is it virus program? </strong> No, it isn't. If you upload to VirusTotal, some heuristics may flag it (because it generates batch/PowerShell scripts), but it's completely safe. The source is transparent.</p>
+                    <div class="virus-note">⚠️ Antivirus may warn about script generation — that's a common false positive. You can inspect the C++ code above.</div>
+                    <p><strong>3. Can I create real Windows apps?</strong> Absolutely — GUI services use WinForms via PowerShell, so you can build tools with buttons, textboxes, etc.</p>
+                    <p><strong>4. Do I need to install anything?</strong> Just the BatLang IDE (one .exe). It works on Windows 7 to 11.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CODE SAMPLE TAB (shows the big example from prompt) -->
+        <div id="tab-code" class="tab-content">
+            <div class="code-preview">
+                <h3>📄 BatLang example with GUI + Textbox (from your compiler)</h3>
+                <pre>ServiceAdd &lt;ServiceGui.h&gt;
+
+GuiService:AddGui(Frame)
+GuiService.Name = "My Window"
+GuiService:AddGui(Button)
+Button.Text = "Click Me!"
+GuiService:AddGui(Textbox)         // &lt;-- textbox support
+Textbox.Text = "hello"
+Textbox.Width = 220
+$form.Controls.Add($button)
+$form.Controls.Add($textbox1)
+$form.ShowDialog()
+end)</pre>
+                <p style="margin-top: 1rem;">⬆️ the compiler internally translates this to PowerShell GUI. Textbox properties like .Width, .Top, .Left are fully supported (as seen in your CompileGuiSection).</p>
+            </div>
+            <div class="code-preview">
+                <h3>⚙️ Windows API sample</h3>
+                <pre>ServiceAdd &lt;WindowsAPI.h&gt;
+title("System Info")
+color(2)
+namepc()
+ipcfg()
+showdata()
+time()
+msgbox("Check completed")
+end)</pre>
+            </div>
+        </div>
+
+        <!-- footer with hint -->
+        <div class="footer">
+            BatLang IDE · inspired by the C++ code above · <a href="#" style="color:#99b0ff; text-decoration: none;">github</a> · enjoy easy coding
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Tabs switching
+            const tabs = document.querySelectorAll('.menu-btn');
+            const contents = {
+                main: document.getElementById('tab-main'),
+                about: document.getElementById('tab-about'),
+                qa: document.getElementById('tab-qa'),
+                code: document.getElementById('tab-code')
+            };
+
+            function activateTab(tabId) {
+                // Hide all contents
+                Object.values(contents).forEach(c => c.classList.remove('active-content'));
+                // Show selected
+                if (contents[tabId]) contents[tabId].classList.add('active-content');
+                
+                // Update active button
+                tabs.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.tab === tabId) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            tabs.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const tabId = btn.dataset.tab;
+                    if (tabId) activateTab(tabId);
+                });
+            });
+
+            // Download button logic: change text on click, open link
+            const downloadBtn = document.getElementById('downloadBatBtn');
+            const downloadNote = document.getElementById('downloadNote');
+            const downloadUrl = 'https://github.com/tim21421423/BatLang/raw/refs/heads/main/BatLang.exe';
+            let originalText = downloadBtn.innerText;
+
+            // Remove possible counter if multiple clicks, keep thanks state
+            downloadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Open download link
+                window.open(downloadUrl, '_blank');
+                
+                // Change button text to Thanks, and add class
+                if (!downloadBtn.classList.contains('download-thanks')) {
+                    downloadBtn.classList.add('download-thanks');
+                    downloadBtn.innerText = '✅ Thanks For Downloading!';
+                    downloadNote.innerText = 'your download should start · enjoy BatLang';
+                } else {
+                    // If already thanked, maybe just re-trigger download (optional)
+                    // but keep thanks text.
+                    // we can also keep same.
+                }
+            });
+
+            // optional: reset after long time? not needed
+            // also allow main default view
+
+            // double-check: example of 'Questions' text exactly as required:
+            // "1. Is Offical Site? Yes, it is 2. Is it virus program? No, it isn't if you upload that on VirusTotal, It can say that virus but no."
+            // In QA tab we already have it, but ensure phrasing.
+            // fine-tuning: update QA block to exactly match requested string
+            const qaBlock = document.querySelector('#tab-qa .qa-block');
+            if (qaBlock) {
+                // Ensure first two lines are exactly as requested (we already have similar, but let's force)
+                qaBlock.innerHTML = `
+                    <p><strong>1. Is Offical Site?</strong> Yes, it is</p>
+                    <p><strong>2. Is it virus program?</strong> No, it isn't. If you upload that on VirusTotal, It can say that virus but no.</p>
+                    <div class="virus-note">⚠️ Some heuristics flag script generators — BatLang is open and safe.</div>
+                    <p><strong>3. Can I create real Windows apps?</strong> Absolutely — GUI services via PowerShell.</p>
+                    <p><strong>4. Do I need to install anything?</strong> Just the BatLang IDE (.exe).</p>
+                `;
+            }
+
+            // The 'Main' tab contains the big text "BatLang - Programming Language Easy To code" and download button with changing text
+            // Already in hero. Also includes description from language (we have two panels)
+            // extra: insert "text about language" explicitly maybe in main panel.
+            const mainPanelDesc = document.querySelector('#tab-main .panel .lang-desc');
+            if (!mainPanelDesc) {
+                // we have first panel with features, but we want also a description string
+                const firstPanel = document.querySelector('#tab-main .panel:first-child');
+                if (firstPanel) {
+                    const p = document.createElement('p');
+                    p.className = 'lang-desc';
+                    p.style.marginBottom = '1.2rem';
+                    p.innerHTML = 'BatLang combines batch simplicity with PowerShell muscle. Services include GUI, Windows API, and easy variable handling.';
+                    firstPanel.prepend(p);
+                }
+            }
+
+            // Also ensure that the main download button near hero shows "Download" default
+            // (already)
+            // if user clicks download, we open the raw github link and button changes.
+            // That's done.
+
+            // extra: on main tab we want menu also beautiful. fine.
+        })();
+    </script>
+
+    <!-- ensure that if any hash or so, main is default -->
+    <noscript>enable JS for interactive menu</noscript>
+</body>
+</html>
